@@ -1,23 +1,37 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import Game from './Game';
+import MainScreen from './MainScreen';
 import './App.css';
 
 function App() {
+  const [gameMode, setGameMode] = useState(null); // null, '1v1', 'bot', 'rules'
+  const [difficulty, setDifficulty] = useState('normal'); // easy, normal, hard
+  const [playerNames, setPlayerNames] = useState({ p1: 'Player 1', p2: 'Player 2' });
+
+  const handleModeSelect = (mode, names, selectedDifficulty = 'normal') => {
+    setGameMode(mode);
+    setPlayerNames(names);
+    if (mode === 'bot') {
+      setDifficulty(selectedDifficulty);
+    }
+  };
+
+  const handleBackToMain = () => {
+    setGameMode(null);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {gameMode ? (
+        <Game 
+          gameMode={gameMode} 
+          difficulty={difficulty} 
+          playerNames={playerNames}
+          onBackToMain={handleBackToMain} 
+        />
+      ) : (
+        <MainScreen onModeSelect={handleModeSelect} />
+      )}
     </div>
   );
 }

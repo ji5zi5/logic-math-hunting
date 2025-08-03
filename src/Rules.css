@@ -1,0 +1,131 @@
+
+.rules-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.rules-modal-content {
+  background: linear-gradient(145deg, #2c3e50, #34495e);
+  color: #ecf0f1;
+  padding: 40px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 2px solid #7f8c8d;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.close-button:hover {
+  background-color: #c0392b;
+  transform: rotate(90deg);
+}
+
+.rules-title {
+  text-align: center;
+  font-size: 2.5em;
+  color: #f1c40f;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.rule-section {
+  margin-bottom: 25px;
+  padding-left: 20px;
+  border-left: 4px solid #f1c40f;
+}
+
+.rule-section h2 {
+  font-size: 1.8em;
+  color: #3498db;
+  margin-bottom: 15px;
+}
+
+.rule-section p,
+.rule-section ul,
+.rule-section ol {
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.rule-section ul, .rule-section ol {
+  padding-left: 25px;
+}
+
+.rule-section li {
+  margin-bottom: 10px;
+}
+
+.rule-section strong {
+  color: #e67e22;
+}
+
+.example {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-style: italic;
+  border-left: 3px solid #2ecc71;
+}
+
+.strategy-tip {
+  background-color: rgba(46, 204, 113, 0.1);
+  border-left-color: #2ecc71;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.strategy-tip h3 {
+  color: #2ecc71;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+/* Scrollbar styling */
+.rules-modal-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.rules-modal-content::-webkit-scrollbar-track {
+  background: #2c3e50;
+}
+
+.rules-modal-content::-webkit-scrollbar-thumb {
+  background-color: #f1c40f;
+  border-radius: 10px;
+  border: 2px solid #2c3e50;
+}
