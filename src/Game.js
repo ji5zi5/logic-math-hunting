@@ -404,11 +404,11 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
 
   // --- Audio Effects ---
   useEffect(() => {
-    bgmRef.current = new Audio('/sounds/bgm.mp3');
+    bgmRef.current = new Audio(process.env.PUBLIC_URL + '/sounds/bgm.mp3');
     bgmRef.current.loop = true;
     bgmRef.current.volume = bgmVolume;
     bgmRef.current.play().catch(e => console.log("BGM play failed: ", e));
-    sfxRef.current = new Audio('/sounds/adsf.mp3');
+    sfxRef.current = new Audio(process.env.PUBLIC_URL + '/sounds/adsf.mp3');
 
     return () => {
         if (bgmRef.current) {
