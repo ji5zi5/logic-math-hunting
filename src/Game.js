@@ -547,10 +547,15 @@ const EquationEditor = ({ equation, onEquationChange, onSubmit, targetNumber, nu
                     setLastInputWasNumber(true);
                 }
             }
-        } else if (['+', '-', '*', '/', '^', '!'].includes(value)) {
+        } else if (['+', '-', '*', '/', '^'].includes(value)) {
             if (lastInputWasNumber) {
                 newEquation += value;
                 setLastInputWasNumber(false);
+            }
+        } else if (value === '!') {
+            if (lastInputWasNumber) {
+                newEquation += value;
+                setLastInputWasNumber(true);
             }
         } else if (value === '(' || value === 'sqrt(') {
             if (!lastInputWasNumber) {
