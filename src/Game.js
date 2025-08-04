@@ -547,10 +547,15 @@ const EquationEditor = ({ equation, onEquationChange, onSubmit, targetNumber, nu
                     setLastInputWasNumber(true);
                 }
             }
-        } else if (['+', '-', '*', '/', '^', '!'].includes(value)) {
+        } else if (['+', '-', '*', '/', '^'].includes(value)) {
             if (lastInputWasNumber) {
                 newEquation += value;
                 setLastInputWasNumber(false);
+            }
+        } else if (value === '!') {
+            if (lastInputWasNumber) {
+                newEquation += value;
+                setLastInputWasNumber(true);
             }
         } else if (value === '(' || value === 'sqrt(') {
             if (!lastInputWasNumber) {
@@ -561,6 +566,7 @@ const EquationEditor = ({ equation, onEquationChange, onSubmit, targetNumber, nu
             if (lastInputWasNumber && parenthesisBalance > 0) {
                 newEquation += value;
                 setParenthesisBalance(p => p - 1);
+                setLastInputWasNumber(true);
             }
         }
         onEquationChange(newEquation);
@@ -568,10 +574,16 @@ const EquationEditor = ({ equation, onEquationChange, onSubmit, targetNumber, nu
 
     const backspace = useCallback(() => {
         if (isBotTurn || equation.length === 0) return;
-        const lastChar = equation.slice(-1);
-        if (lastChar === '(') setParenthesisBalance(p => p - 1);
-        if (lastChar === ')') setParenthesisBalance(p => p + 1);
-        const newEquation = equation.slice(0, -1);
+        let newEquation = equation;
+        if (newEquation.endsWith('sqrt(')) {
+            newEquation = newEquation.slice(0, -5);
+            setParenthesisBalance(p => p - 1);
+        } else {
+            const lastChar = equation.slice(-1);
+            if (lastChar === '(') setParenthesisBalance(p => p - 1);
+            if (lastChar === ')') setParenthesisBalance(p => p + 1);
+            newEquation = equation.slice(0, -1);
+        }
         onEquationChange(newEquation);
         if (newEquation.length > 0) {
             const newLastChar = newEquation.slice(-1);

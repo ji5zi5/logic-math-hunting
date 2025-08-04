@@ -233,6 +233,46 @@ h1 {
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
+@media (max-width: 768px) {
+  .game-main-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .game-board {
+    grid-template-columns: repeat(13, 25px); /* Smaller cells for mobile */
+    grid-template-rows: repeat(13, 25px);
+  }
+
+  .board-cell {
+    width: 25px;
+    height: 25px;
+    font-size: 0.8em;
+  }
+
+  .audio-controls {
+    position: static; /* Remove absolute positioning */
+    margin-top: 20px;
+    align-items: center;
+  }
+
+  .game-info-panel {
+    width: 95%;
+    max-width: none;
+  }
+
+  .equation-input {
+    min-width: unset;
+    width: 95%;
+  }
+
+  .calculator-buttons button {
+    font-size: 1em;
+    height: 45px;
+  }
+}
+
 .board-cell.obstacle {
   background-color: #7f8c8d;
   cursor: not-allowed;
