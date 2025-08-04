@@ -331,7 +331,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
 
   useEffect(() => {
     if (gameMode === 'bot') {
-      fetch('/number_formulas_final.json')
+      fetch(process.env.PUBLIC_URL + '/number_formulas_final.json')
         .then(response => response.json())
         .then(data => {
             const formulaMap = {};
