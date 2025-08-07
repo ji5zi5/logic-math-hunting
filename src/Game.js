@@ -75,17 +75,7 @@ const findBestMove = (board, ownedCells, formulas, difficulty, isFirstPlayer) =>
           }
         }
 
-        if (isValidPath && currentPath.length > 1) {
-          const targetStr = currentPath.map(cell => board[cell.row][cell.col].value).join('');
-          if (formulas[targetStr]) {
-            let eq = formulas[targetStr].replace(/factorial\(([^)]+)\)/g, '($1)!');
-            possibleMoves.push({
-              path: currentPath,
-              target: parseInt(targetStr, 10),
-              equation: eq
-            });
-          }
-        }
+        if (isValidPath && currentPath.length > 1) {          const sortedPath = [...currentPath].sort((a, b) => {              if (a.row !== b.row) return a.row - b.row;              return a.col - b.col;          });          const targetStr = sortedPath.map(cell => board[cell.row][cell.col].value).join('');          if (formulas[targetStr]) {            let eq = formulas[targetStr].replace(/factorial\(([^)]+)\)/g, '($1)!');            possibleMoves.push({              path: currentPath,              target: parseInt(targetStr, 10),              equation: eq            });          }        }
       }
     });
   });
@@ -132,7 +122,7 @@ const findBestMove = (board, ownedCells, formulas, difficulty, isFirstPlayer) =>
   return finalMoves[Math.floor(Math.random() * finalMoves.length)];
 };
 
-const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) => {
+const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackToMain }) => {
   const [board, setBoard] = useState([]);
   const [playerTurn, setPlayerTurn] = useState(null);
   const [firstPlayer, setFirstPlayer] = useState(null);
@@ -149,7 +139,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartCell, setDragStartCell] = useState(null);
   const [hoveredCells, setHoveredCells] = useState([]);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(timeLimit);
   const [botThinking, setBotThinking] = useState(false);
   const [formulas, setFormulas] = useState(null);
   
@@ -183,7 +173,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
     setPlayerTurn(nextPlayer);
     setChallengeCount(1);
     setGamePhase('selecting');
-    setTimer(60);
+    setTimer(timeLimit);
     setTurnCount(prev => prev + 1);
   }, [playerTurn, turnCount, board, player1ClaimedCells, player2ClaimedCells, playerNames]);
 
@@ -195,7 +185,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
     if (challengeCount === 1) {
         setChallengeCount(2);
         setGamePhase('selecting');
-        setTimer(60);
+        setTimer(timeLimit);
     } else {
         endTurn();
     }
@@ -267,7 +257,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
     setTargetNumber(null);
     setEquation('');
     setGamePhase('selecting');
-    setTimer(60);
+    setTimer(timeLimit);
   }, []);
 
   const handleMouseDown = useCallback((row, col) => {
@@ -317,7 +307,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
         setSelectedCells(hoveredCells);
         setEquation(''); // Clear equation before entering phase
         setGamePhase('equation');
-        setTimer(60);
+        setTimer(timeLimit);
       }
     }
     setIsDragging(false);
@@ -392,15 +382,15 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
 
   useEffect(() => {
     let interval;
-    if ((gamePhase === 'selecting' || gamePhase === 'equation') && timer > 0) {
+    if (timeLimit !== -1 && (gamePhase === 'selecting' || gamePhase === 'equation') && timer > 0) {
       interval = setInterval(() => {
         setTimer(t => t - 1);
       }, 1000);
-    } else if (timer <= 0) {
+    } else if (timeLimit !== -1 && timer <= 0) {
       handleTimeout();
     }
     return () => clearInterval(interval);
-  }, [timer, gamePhase, handleTimeout]);
+  }, [timer, gamePhase, handleTimeout, timeLimit]);
 
   // --- Audio Effects ---
   useEffect(() => {
@@ -441,7 +431,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, onBackToMain }) =>
             <p>현재 턴: <span className={playerTurn === 'player1' ? 'player1-text' : 'player2-text'}>{playerNames[playerTurn === 'player1' ? 'p1' : 'p2']}</span></p>
             <p>{playerNames.p1}: {player1ClaimedCells.length}칸 / {playerNames.p2}: {player2ClaimedCells.length}칸</p>
             <p>턴: {turnCount + 1} / 12</p>
-            <div className="timer">남은 시간: {timer}초</div>
+            <div className="timer">남은 시간: {timeLimit === -1 ? '무제한' : `${timer}초`}</div>
             <p className="message">{message}</p>
             <button onClick={onBackToMain} className="back-to-main-button">메인으로</button>
             <button onClick={resetGame} className="reset-button">게임 초기화</button>

@@ -5,6 +5,7 @@ import Rules from './Rules';
 const MainScreen = ({ onModeSelect }) => {
   const [showRules, setShowRules] = useState(false);
   const [showDifficultySelection, setShowDifficultySelection] = useState(false);
+  const [timeLimit, setTimeLimit] = useState(60); // Default 60 seconds
 
   const handleStartGame = (mode, difficulty = 'normal') => {
     const player1Name = prompt("플레이어 1의 이름을 입력하세요:");
@@ -18,13 +19,28 @@ const MainScreen = ({ onModeSelect }) => {
       p2 = '봇';
     }
 
-    onModeSelect(mode, { p1, p2 }, difficulty);
+    onModeSelect(mode, { p1, p2 }, difficulty, timeLimit);
   };
 
   return (
     <div className="main-screen-container">
       <h1 className="main-title">수식 따먹기</h1>
       
+      <div className="game-settings">
+        <label htmlFor="time-limit-select">시간 제한: </label>
+        <select 
+          id="time-limit-select"
+          value={timeLimit}
+          onChange={(e) => setTimeLimit(parseInt(e.target.value, 10))}
+          className="time-limit-select"
+        >
+          <option value={-1}>무제한</option>
+          <option value={30}>30초</option>
+          <option value={60}>60초</option>
+          <option value={90}>90초</option>
+        </select>
+      </div>
+
       {!showDifficultySelection ? (
         <div className="mode-selection-buttons">
           <button onClick={() => handleStartGame('1v1')} className="mode-button">1 vs 1</button>
