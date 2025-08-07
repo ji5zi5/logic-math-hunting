@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/logic-math-fucking/static/css/main.5128b227.css",
-    "main.js": "/logic-math-fucking/static/js/main.bb11939b.js",
+    "main.js": "/logic-math-fucking/static/js/main.cfc9249c.js",
     "static/js/453.6bcce703.chunk.js": "/logic-math-fucking/static/js/453.6bcce703.chunk.js",
     "index.html": "/logic-math-fucking/index.html",
     "main.5128b227.css.map": "/logic-math-fucking/static/css/main.5128b227.css.map",
-    "main.bb11939b.js.map": "/logic-math-fucking/static/js/main.bb11939b.js.map",
+    "main.cfc9249c.js.map": "/logic-math-fucking/static/js/main.cfc9249c.js.map",
     "453.6bcce703.chunk.js.map": "/logic-math-fucking/static/js/453.6bcce703.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5128b227.css",
-    "static/js/main.bb11939b.js"
+    "static/js/main.cfc9249c.js"
   ]
 }
