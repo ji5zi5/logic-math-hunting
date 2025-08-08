@@ -1,8 +1,11 @@
 {
   "name": "math-puzzle-game",
   "version": "0.1.0",
-  "homepage": "https://ji5zi5.github.io/logic-math-fucking",
   "private": true,
+  "description": "A math puzzle game",
+  "author": "Your Name",
+  "main": "build/electron.js",
+  "homepage": ".",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -19,9 +22,13 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "electron:start": "concurrently \"npm:start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron:build": "rimraf dist && npm run build && electron-builder",
+    "postinstall": "copyfiles -u 1 public/electron.js build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "generate-numbers": "node scripts/generateNumbers.js"
+    "generate-numbers": "node scripts/generateNumbers.js",
+    "clean:dist": "rimraf dist"
   },
   "eslintConfig": {
     "extends": [
@@ -42,6 +49,23 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.3.0"
+    "concurrently": "^8.2.2",
+    "copyfiles": "^2.4.1",
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12",
+    "gh-pages": "^6.3.0",
+    "rimraf": "^6.0.1",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.example.math-puzzle-game",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "!**/debug.log"
+    ],
+    "win": {
+      "verifyUpdateCodeSignature": false
+    }
   }
 }

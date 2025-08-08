@@ -175,7 +175,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackT
     setGamePhase('selecting');
     setTimer(timeLimit);
     setTurnCount(prev => prev + 1);
-  }, [playerTurn, turnCount, board, player1ClaimedCells, player2ClaimedCells, playerNames]);
+  }, [playerTurn, turnCount, board, player1ClaimedCells, player2ClaimedCells, playerNames, timeLimit]);
 
   const handleChallengeEnd = useCallback((success) => {
     setEquation('');
@@ -189,7 +189,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackT
     } else {
         endTurn();
     }
-  }, [challengeCount, endTurn]);
+  }, [challengeCount, endTurn, timeLimit]);
 
   const handleSubmitEquation = useCallback(() => {
     let isCorrect = false;
@@ -258,7 +258,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackT
     setEquation('');
     setGamePhase('selecting');
     setTimer(timeLimit);
-  }, []);
+  }, [timeLimit]);
 
   const handleMouseDown = useCallback((row, col) => {
     if (gamePhase !== 'selecting' || (gameMode === 'bot' && playerTurn === 'player2')) return;
@@ -342,18 +342,22 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackT
   }, [gameMode, resetGame]);
 
   useEffect(() => {
-    if (gameMode === 'bot') {
-      fetch(process.env.PUBLIC_URL + '/number_formulas_final.json')
-        .then(response => response.json())
-        .then(data => {
-            const formulaMap = {};
-            for (const result of data.results) {
-                formulaMap[result.number] = result.formula;
-            }
-            setFormulas(formulaMap);
-        })
-        .catch(error => console.error('Error loading formulas:', error));
-    }
+    const fetchFormulas = async () => {
+      if (gameMode === 'bot') {
+        try {
+          const response = await fetch('./number_formulas_final.json');
+          const data = await response.json();
+          const formulaMap = {};
+          for (const result of data.results) {
+              formulaMap[result.number] = result.formula;
+          }
+          setFormulas(formulaMap);
+        } catch (error) {
+          console.error('Error loading formulas:', error);
+        }
+      }
+    };
+    fetchFormulas();
   }, [gameMode]);
 
   useEffect(() => {

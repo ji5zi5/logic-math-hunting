@@ -1,25 +1,44 @@
+
 import React, { useState } from 'react';
 import './MainScreen.css';
 import Rules from './Rules';
+import NameInputModal from './NameInputModal'; // 모달 컴포넌트 import
 
 const MainScreen = ({ onModeSelect }) => {
   const [showRules, setShowRules] = useState(false);
   const [showDifficultySelection, setShowDifficultySelection] = useState(false);
-  const [timeLimit, setTimeLimit] = useState(60); // Default 60 seconds
+  const [timeLimit, setTimeLimit] = useState(60);
+
+  // 모달 상태 관리
+  const [modalState, setModalState] = useState({ show: false, title: '', mode: null, difficulty: null, player1Name: null });
 
   const handleStartGame = (mode, difficulty = 'normal') => {
-    const player1Name = prompt("플레이어 1의 이름을 입력하세요:");
-    const p1 = player1Name ? player1Name.trim() : 'Player 1';
+    // 1단계: 플레이어 1의 이름 입력을 위해 모달 열기
+    setModalState({ show: true, title: '플레이어 1의 이름을 입력하세요', mode, difficulty });
+  };
 
-    let p2;
-    if (mode === '1v1') {
-      const player2Name = prompt("플레이어 2의 이름을 입력하세요:");
-      p2 = player2Name ? player2Name.trim() : 'Player 2';
+  const handleNameSubmit = (name) => {
+    const { mode, difficulty, player1Name } = modalState;
+
+    if (!player1Name) {
+      // 2단계: 플레이어 1의 이름이 입력됨
+      if (mode === '1v1') {
+        // 1v1 모드이면 플레이어 2의 이름 입력을 위해 다시 모달 열기
+        setModalState({ ...modalState, title: '플레이어 2의 이름을 입력하세요', player1Name: name });
+      } else {
+        // 봇전 모드이면 바로 게임 시작
+        onModeSelect(mode, { p1: name, p2: '봇' }, difficulty, timeLimit);
+        setModalState({ show: false }); // 모달 닫기
+      }
     } else {
-      p2 = '봇';
+      // 3단계: 플레이어 2의 이름이 입력됨 (1v1 모드)
+      onModeSelect(mode, { p1: player1Name, p2: name }, difficulty, timeLimit);
+      setModalState({ show: false }); // 모달 닫기
     }
+  };
 
-    onModeSelect(mode, { p1, p2 }, difficulty, timeLimit);
+  const handleModalClose = () => {
+    setModalState({ show: false }); // 모달 닫기
   };
 
   return (
@@ -57,6 +76,14 @@ const MainScreen = ({ onModeSelect }) => {
 
       <button onClick={() => setShowRules(true)} className="rules-button">규칙 보기</button>
       {showRules && <Rules onClose={() => setShowRules(false)} />}
+
+      {/* 이름 입력 모달 */}
+      <NameInputModal
+        show={modalState.show}
+        title={modalState.title}
+        onSubmit={handleNameSubmit}
+        onClose={handleModalClose}
+      />
     </div>
   );
 };
