@@ -313,7 +313,29 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackT
     setIsDragging(false);
     setDragStartCell(null);
     setHoveredCells([]);
-  }, [isDragging, hoveredCells, board]);
+  }, [isDragging, hoveredCells, board, timeLimit]);
+
+  const handleTouchStart = useCallback((e, row, col) => {
+    e.preventDefault();
+    handleMouseDown(row, col);
+  }, [handleMouseDown]);
+
+  const handleTouchMove = useCallback((e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (targetElement) {
+        const rowAttr = targetElement.getAttribute('data-row');
+        const colAttr = targetElement.getAttribute('data-col');
+        if (rowAttr && colAttr) {
+            const row = parseInt(rowAttr, 10);
+            const col = parseInt(colAttr, 10);
+            if (!isNaN(row) && !isNaN(col)) {
+                handleMouseEnter(row, col);
+            }
+        }
+    }
+  }, [handleMouseEnter]);
 
   useEffect(() => {
     resetGame();
@@ -426,7 +448,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackT
   }, [sfxVolume]);
 
   return (
-    <div className="game-container" onMouseUp={handleMouseUp}>
+    <div className="game-container" onMouseUp={handleMouseUp} onTouchEnd={handleMouseUp}>
         <div className="game-info-panel">
             <p>현재 턴: <span className={playerTurn === 'player1' ? 'player1-text' : 'player2-text'}>{playerNames[playerTurn === 'player1' ? 'p1' : 'p2']}</span></p>
             <p>{playerNames.p1}: {player1ClaimedCells.length}칸 / {playerNames.p2}: {player2ClaimedCells.length}칸</p>
@@ -473,7 +495,7 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackT
                     />
                 </div>
             </div>
-            <div className="game-board" onMouseLeave={handleMouseUp}>
+            <div className="game-board" onMouseLeave={handleMouseUp} onTouchMove={handleTouchMove}>
                 {board.map((row, rIdx) => row.map((cell, cIdx) => {
                     const isSelected = selectedCells.some(c => c.row === rIdx && c.col === cIdx);
                     const isHovered = hoveredCells.some(c => c.row === rIdx && c.col === cIdx);
@@ -483,7 +505,15 @@ const Game = ({ gameMode, difficulty = 'normal', playerNames, timeLimit, onBackT
                     if (isSelected) cellClass += ' selected-target-cell';
                     if (isHovered) cellClass += ' hovered-cell';
                     return (
-                        <div key={`${rIdx}-${cIdx}`} className={cellClass} onMouseDown={() => handleMouseDown(rIdx, cIdx)} onMouseEnter={() => handleMouseEnter(rIdx, cIdx)}>
+                        <div 
+                            key={`${rIdx}-${cIdx}`} 
+                            className={cellClass} 
+                            onMouseDown={() => handleMouseDown(rIdx, cIdx)} 
+                            onMouseEnter={() => handleMouseEnter(rIdx, cIdx)}
+                            onTouchStart={(e) => handleTouchStart(e, rIdx, cIdx)}
+                            data-row={rIdx}
+                            data-col={cIdx}
+                        >
                             {cell.value}
                         </div>
                     );
