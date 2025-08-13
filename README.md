@@ -1,4 +1,4 @@
-# https://ji5zi5.github.io/logic-math-fucking/
+# https://ji5zi5.github.io/logic-math-hunting/
 
 # Getting Started with Create React App
 
